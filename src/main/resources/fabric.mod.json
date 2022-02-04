@@ -1,37 +1,26 @@
 {
   "schemaVersion": 1,
-  "id": "modid",
+  "id": "minifabric-mod-menu",
+  "name": "MiniFabric Mod Menu",
   "version": "${version}",
-
-  "name": "Example Mod",
-  "description": "This is an example description! Tell everyone what your mod is about!",
-  "authors": [
-    "Me!"
-  ],
+  "environment": "*",
+  "license": "Apache-2.0",
+  "icon": "assets/minifabric-modmenu/icon.png",
   "contact": {
     "homepage": "https://minifabric.github.io/",
-    "sources": "https://github.com/MiniFabric/MiniFabric-example-mod"
+    "sources": "https://github.com/MiniFabric/MiniFabric_API",
+    "discord": "https://discord.gg/MsQdqe52yT",
+    "issues": "https://github.com/MiniFabric/MiniFabric_API/issues"
   },
-
-  "license": "CC0-1.0",
-  "icon": "assets/modid/icon.png",
-
-  "environment": "*",
-  "entrypoints": {
-    "main": [
-      "io.github.minifabric.example.ExampleMod"
-    ]
-  },
+  "authors": [
+    "MiniFabric",
+    "PseudoDistant"
+  ],
   "mixins": [
     "modid.mixins.json"
   ],
-
   "depends": {
-    "fabricloader": ">=0.12.12",
-    "minicraft": "*",
-    "java": ">=17"
+    "minicraftplus": "2.1.0-dev1"
   },
-  "suggests": {
-    "another-mod": "*"
-  }
+  "description": "MiniFabric Mod Menu"
 }

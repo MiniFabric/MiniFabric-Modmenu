@@ -8,3 +8,6 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
+include 'src:main'
+findProject(':src:main')?.name = 'Minicraft'
+

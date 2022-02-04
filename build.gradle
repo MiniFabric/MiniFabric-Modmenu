@@ -12,14 +12,18 @@ repositories {
 		url = 'https://maven.fabricmc.net/'
 	}
 	maven {
-		name = 'jitpack'
-		url = 'https://jitpack.io'
+		name = 'RewovenMC'
+		url = 'https://maven.rewovenmc.tk/'
 	}
 	mavenCentral()
+
+	//MavenLocal because Minicraft+ lacks a Maven.
+	mavenLocal()
 }
 
 dependencies {
-	implementation 'com.github.skeeto:Minicraft:21e7007696'
+	implementation "com.playminicraft:minicraft-plus-revived:${project.minicraftplus_version}"
+	implementation 'io.github.pseudodistant:MinicraftGameProvider:1.1.1'
 	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	implementation "net.fabricmc:sponge-mixin:0.11.0+mixin.0.8.5"
 	implementation "net.fabricmc:access-widener:2.1.0"
@@ -35,8 +39,7 @@ processResources {
 }
 
 tasks.withType(JavaCompile).configureEach {
-	// Minecraft 1.18 (1.18-pre2) upwards uses Java 17.
-	it.options.release = 17
+	it.options.release = 16
 }
 
 java {
