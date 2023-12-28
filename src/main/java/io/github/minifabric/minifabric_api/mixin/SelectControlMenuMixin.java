@@ -2,6 +2,7 @@ package io.github.minifabric.minifabric_api.mixin;
 
 import com.mojang.ld22.screen.controlmenu.ControlMenu;
 import com.mojang.ld22.screen.controlmenu.SelectControlMenu;
+import com.mojang.ld22.screen.controlmenu.TitleMenu;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -17,7 +18,7 @@ public class SelectControlMenuMixin extends ControlMenu {
 	public void removeClose(SelectControlMenu instance, int i) {
 		if (this.input.attack.clicked || this.input.menu.clicked) {
 			((SelectControlMenu)(Object)this).optionSelected(selected);
-		} else if (this.input.close.clicked) {
+		} else if (this.input.close.clicked && !((SelectControlMenu)(Object) this instanceof TitleMenu)) {
 			this.gameControl.setMenu(this.parent);
 		}
 	}
