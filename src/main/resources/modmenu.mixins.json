@@ -4,7 +4,8 @@
   "package": "io.github.minifabric.minifabric_api.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "TitleDisplayMixin"
+    "TitleDisplayMixin",
+    "SelectControlMenuMixin"
   ],
   "client": [
 
