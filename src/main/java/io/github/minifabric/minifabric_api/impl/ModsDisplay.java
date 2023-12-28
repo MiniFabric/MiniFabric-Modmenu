@@ -1,6 +1,5 @@
 package io.github.minifabric.minifabric_api.impl;
 
-import minicraft.core.Action;
 import minicraft.core.Game;
 import minicraft.core.io.InputHandler;
 import minicraft.core.io.Localization;
@@ -12,7 +11,6 @@ import minicraft.screen.entry.SelectEntry;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
@@ -74,7 +72,7 @@ public class ModsDisplay extends Display {
     public void tick(InputHandler input) {
         super.tick(input);
         if (input.getKey("exit").clicked) {
-            Game.setMenu(parent);
+            Game.setDisplay(parent);
         }
     }
 
@@ -90,10 +88,16 @@ public class ModsDisplay extends Display {
         for(int i = 0; i < entries.length; i++) {
             String name = modNames.get(i);
             final String version = modVersions.get(i);
-            String description = modsList.stream().filter(mod -> Objects.equals(mod.getMetadata().getName(), name)).findFirst().get().getMetadata().getDescription() == null ?
-            "" : modsList.stream().filter(mod -> Objects.equals(mod.getMetadata().getName(), name)).findFirst().get().getMetadata().getDescription();
+            String description = modsList.stream()
+                    .filter(mod -> Objects.equals(mod.getMetadata().getName(), name))
+                    .findFirst().get().getMetadata().getDescription() == null ?
+                    "" : modsList.stream()
+                    .filter(mod -> Objects.equals(mod.getMetadata().getName(), name))
+                    .findFirst().get().getMetadata().getDescription();
+
+
             entries[i] = new SelectEntry(modNames.get(i), () -> {
-                Game.setMenu(new BookDisplay(description, false));
+                Game.setDisplay(new BookDisplay(description, false));
                 }, false) {};
         }
 
@@ -111,7 +115,7 @@ public class ModsDisplay extends Display {
     public void render(Screen screen) {
         super.render(screen);
 
-        int sel = ((MenuDuck)menus[0]).selectionGetter();
+        int sel = ((MenuDuck)menus[0]).minifabric_modmenu$selectionGetter();
         if(sel >= 0 && sel < modVersions.size()) {
             String name = modNames.get(sel);
             String version = modVersions.get(sel);

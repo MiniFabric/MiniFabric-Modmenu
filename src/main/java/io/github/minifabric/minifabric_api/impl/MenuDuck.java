@@ -1,5 +1,5 @@
 package io.github.minifabric.minifabric_api.impl;
 
 public interface MenuDuck {
-    int selectionGetter();
+    int minifabric_modmenu$selectionGetter();
 }

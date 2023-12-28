@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.Shadow;
 public class MenuAccessor implements MenuDuck {
     @Shadow private int selection;
 
-    public int selectionGetter() {
+    public int minifabric_modmenu$selectionGetter() {
         return selection;
     }
 }

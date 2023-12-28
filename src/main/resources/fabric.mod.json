@@ -2,6 +2,7 @@
   "schemaVersion": 1,
   "id": "minifabric-mod-menu",
   "name": "MiniFabric Mod Menu",
+  "description": "MiniFabric ModMenu, to display and configure mods!",
   "version": "${version}",
   "environment": "*",
   "license": "Apache-2.0",
@@ -17,10 +18,11 @@
     "PseudoDistant"
   ],
   "mixins": [
-    "modid.mixins.json"
+    "modmenu.mixins.json"
   ],
   "depends": {
-    "minicraftplus": "2.1.0-dev1"
-  },
-  "description": "MiniFabric Mod Menu"
+    "minicraftplus": [
+      "2.2.0-dev3"
+    ]
+  }
 }

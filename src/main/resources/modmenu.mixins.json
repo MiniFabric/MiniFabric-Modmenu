@@ -4,11 +4,11 @@
   "package": "io.github.minifabric.minifabric_api.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-
-  ],
-  "client": [
     "TitleDisplayMixin",
     "MenuAccessor"
+  ],
+  "client": [
+
   ],
   "injectors": {
     "defaultRequire": 1
