@@ -21,8 +21,8 @@
     "modmenu.mixins.json"
   ],
   "depends": {
-    "minicraft-delux": [
-      "1.20"
+    "minicraft": [
+      "0.0.0"
     ]
   }
 }

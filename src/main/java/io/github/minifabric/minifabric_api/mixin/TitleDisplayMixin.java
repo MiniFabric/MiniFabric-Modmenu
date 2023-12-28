@@ -1,73 +1,101 @@
 package io.github.minifabric.minifabric_api.mixin;
 
-import com.mojang.ld22.GameState;
-import com.mojang.ld22.screen.controlmenu.*;
+import com.mojang.ld22.gfx.Color;
+import com.mojang.ld22.gfx.Font;
+import com.mojang.ld22.gfx.Screen;
+import com.mojang.ld22.screen.AboutMenu;
+import com.mojang.ld22.screen.InstructionsMenu;
+import com.mojang.ld22.screen.Menu;
+import com.mojang.ld22.screen.TitleMenu;
 import com.mojang.ld22.sound.Sound;
 import io.github.minifabric.minifabric_api.impl.ModsDisplay;
 import org.apache.commons.lang3.ArrayUtils;
 import org.spongepowered.asm.mixin.*;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(TitleMenu.class)
-public class TitleDisplayMixin extends SelectControlMenu {
-    @Final @Mutable @Shadow private static String[] defaultOptions;
-
-    public TitleDisplayMixin(ControlMenu parent) {
-        super(parent);
-    }
+public class TitleDisplayMixin extends Menu {
+    @Shadow @Final @Mutable private static String[] options;
+    @Shadow private int selected;
 
     /**
      * @author PseudoDistant
      * @reason Fuck it, not like anyone else would edit this.
      */
     @Overwrite
-    public void optionSelected(int selected) {
-        if (selected == 8) {
-            this.gameControl.gameState.respawn();
-            this.gameControl.setMenu((ControlMenu)null);
+    public void tick() {
+        if (this.input.up.clicked) {
+            --this.selected;
         }
 
-        if (selected == 7) {
-            this.gameControl.setMenu((ControlMenu)null);
+        if (this.input.down.clicked) {
+            ++this.selected;
         }
 
-        if (selected == 6) {
-            Sound.test.play();
-            this.gameControl.gameState = new GameState(this.gameControl);
-            this.gameControl.gameState.resetGame();
-            this.gameControl.setMenu((ControlMenu)null);
+        int len = options.length;
+        if (this.selected < 0) {
+            this.selected += len;
         }
 
-        if (selected == 5) {
-            this.gameControl.setMenu(new SaveMenu(this));
+        if (this.selected >= len) {
+            this.selected -= len;
         }
 
-        if (selected == 4) {
-            this.gameControl.setMenu(new LoadMenu(this));
+        if (this.input.attack.clicked || this.input.menu.clicked) {
+            if (this.selected == 0) {
+                Sound.test.play();
+                this.game.resetGame();
+                this.game.setMenu((Menu) null);
+            }
+
+            if (this.selected == 1) {
+                this.game.setMenu(new InstructionsMenu(this));
+            }
+
+            if (this.selected == 2) {
+                this.game.setMenu(new AboutMenu(this));
+            }
+
+            if (this.selected == 3) {
+                this.game.setMenu(new ModsDisplay(this));
+            }
+        }
+    }
+
+    /**
+     * @author PseudoDistant
+     * @reason See tick
+     */
+    @Overwrite
+    public void render(Screen screen) {
+        screen.clear(0);
+        int h = 2;
+        int w = 13;
+        int titleColor = Color.get(0, 8, 131, 551);
+        int xo = (screen.w - w * 8) / 2;
+        int yo = 24;
+
+        int i;
+        for(i = 0; i < h; ++i) {
+            for(int x = 0; x < w; ++x) {
+                screen.render(xo + x * 8, yo + i * 8, x + (i + 6) * 32, titleColor, 0);
+            }
         }
 
-        if (selected == 3) {
-            this.gameControl.setMenu(new HighScoreMenu(this));
+        for(i = 0; i < 4; ++i) {
+            String msg = options[i];
+            int col = Color.get(0, 222, 222, 222);
+            if (i == this.selected) {
+                msg = "> " + msg + " <";
+                col = Color.get(0, 555, 555, 555);
+            }
+
+            Font.draw(msg, screen, (screen.w - msg.length() * 8) / 2, (8 + i) * 8, col);
         }
 
-        if (selected == 2) {
-            this.gameControl.setMenu(new InstructionsMenu(this));
-        }
-
-        if (selected == 1) {
-            this.gameControl.setMenu(new AboutMenu(this));
-        }
-
-        if (selected == 0) {
-            this.gameControl.setMenu(new ModsDisplay(this));
-        }
-
+        Font.draw("(Arrow keys,X and C)", screen, 0, screen.h - 8, Color.get(0, 111, 111, 111));
     }
 
     static {
-        defaultOptions = ArrayUtils.add(defaultOptions,0, "Mods");
+        options = ArrayUtils.add(options, "Mods");
     }
 }

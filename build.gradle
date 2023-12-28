@@ -16,7 +16,7 @@ repositories {
 }
 
 dependencies {
-	implementation files("libs/minicraft_delux.jar")
+	implementation files("libs/ld22.jar")
 	implementation 'io.github.pseudodistant:MinicraftGameProvider:1.2.0'
 	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	implementation "net.fabricmc:sponge-mixin:0.11.0+mixin.0.8.5"
