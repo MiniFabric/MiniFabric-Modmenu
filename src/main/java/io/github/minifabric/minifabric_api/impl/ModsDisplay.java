@@ -10,6 +10,7 @@ import minicraft.screen.*;
 import minicraft.screen.entry.SelectEntry;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
+import net.fabricmc.loader.api.metadata.Person;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,22 +19,24 @@ import java.util.Objects;
 public class ModsDisplay extends Display {
 
     private final Collection<ModContainer> modsList = FabricLoader.getInstance().getAllMods();
-    private static String modName = "";
 
-    public static String getModName() { return modName; }
-
-    private static ArrayList<String> modNames = null;
-    private static final ArrayList<String> modVersions = new ArrayList<>();
+    private static ArrayList<String> modNames;
+    private static ArrayList<String> modDescriptions;
+    private static ArrayList<String> modVersions;
+    private static ArrayList<String> modAuthors;
 
     Display parent;
 
     private static ArrayList<String> getModNames() {
         Collection<ModContainer> modsList = FabricLoader.getInstance().getAllMods();
-        ArrayList<String> modNames = new ArrayList<>();
+        ArrayList<String> names = new ArrayList<>();
+        ArrayList<String> descs = new ArrayList<>();
+        ArrayList<String> versions = new ArrayList<>();
+        ArrayList<String> authors = new ArrayList<>();
 
         if(ModsDisplay.modNames != null) {
-            modNames.addAll(ModsDisplay.modNames);
-            return modNames;
+            names.addAll(ModsDisplay.modNames);
+            return names;
         }
 
         if(modsList.isEmpty()) {
@@ -41,27 +44,50 @@ public class ModsDisplay extends Display {
             return new ArrayList<>();
         }
 
-        modVersions.clear();
-
         // Iterate between every mod loaded by Fabric.
         for (ModContainer container : modsList) {
             if (container != null) {
                 String name = container.getMetadata().getName();
                 if (!container.getMetadata().getId().equals("java")) {
-                    modNames.add(name);
-                    modVersions.add(container.getMetadata().getVersion().toString());
+                    names.add(name);
+                    descs.add(container.getMetadata().getDescription() == null ? "" : container.getMetadata().getDescription());
+                    versions.add(container.getMetadata().getVersion().toString());
+                    String author;
+                    if (container.getMetadata().getAuthors() != null) {
+                        StringBuilder authorNames = new StringBuilder();
+                        for (Person person : container.getMetadata().getAuthors()) {
+                            if (!authorNames.isEmpty()) {
+                                authorNames.append(", ");
+                            }
+                            authorNames.append(person.getName());
+                        }
+                        author = authorNames.toString();
+                    } else {
+                        author = "Unknown";
+                    }
+                    authors.add(author);
                 }
             }
         }
 
-        if(ModsDisplay.modNames == null)
+        if(ModsDisplay.modNames == null) {
             ModsDisplay.modNames = new ArrayList<>();
-        else
+            ModsDisplay.modDescriptions = new ArrayList<>();
+            ModsDisplay.modVersions = new ArrayList<>();
+            ModsDisplay.modAuthors = new ArrayList<>();
+        } else {
             ModsDisplay.modNames.clear();
+            ModsDisplay.modDescriptions.clear();
+            ModsDisplay.modVersions.clear();
+            ModsDisplay.modAuthors.clear();
+        }
 
-        ModsDisplay.modNames.addAll(modNames);
+        ModsDisplay.modNames.addAll(names);
+        ModsDisplay.modDescriptions.addAll(descs);
+        ModsDisplay.modVersions.addAll(versions);
+        ModsDisplay.modAuthors.addAll(authors);
 
-        return modNames;
+        return names;
     }
 
     public ModsDisplay() {
@@ -71,30 +97,21 @@ public class ModsDisplay extends Display {
     @Override
     public void tick(InputHandler input) {
         super.tick(input);
-        if (input.getKey("exit").clicked) {
+        if (input.getMappedKey("exit").isClicked()) {
             Game.setDisplay(parent);
         }
     }
 
     @Override
     public void init(Display parent) {
-        modName = "";
         this.parent = parent;
 
         ArrayList<String> modNames = getModNames();
 
-        SelectEntry[] entries = new SelectEntry[modNames.size()];
+        SelectEntry[] entries = new SelectEntry[ModsDisplay.modNames.size()];
 
         for(int i = 0; i < entries.length; i++) {
-            String name = modNames.get(i);
-            final String version = modVersions.get(i);
-            String description = modsList.stream()
-                    .filter(mod -> Objects.equals(mod.getMetadata().getName(), name))
-                    .findFirst().get().getMetadata().getDescription() == null ?
-                    "" : modsList.stream()
-                    .filter(mod -> Objects.equals(mod.getMetadata().getName(), name))
-                    .findFirst().get().getMetadata().getDescription();
-
+            String description = modDescriptions.get(i);
 
             entries[i] = new SelectEntry(modNames.get(i), () -> {
                 Game.setDisplay(new BookDisplay(description, false));
@@ -105,7 +122,7 @@ public class ModsDisplay extends Display {
 
         menus = new Menu[] {
                 new Menu.Builder(false, 0, RelPos.CENTER, entries)
-                        .setDisplayLength(5)
+                        .setDisplayLength(6)
                         .setScrollPolicies(1, true)
                         .createMenu()
         };
@@ -119,13 +136,15 @@ public class ModsDisplay extends Display {
         if(sel >= 0 && sel < modVersions.size()) {
             String name = modNames.get(sel);
             String version = modVersions.get(sel);
+            String author = modAuthors.get(sel);
             int col = Color.WHITE;
             Font.drawCentered(Localization.getLocalized("Name:") + " " + name, screen, Font.textHeight() * 2, col);
-            Font.drawCentered(Localization.getLocalized("Mod version:") + " " + version, screen, Font.textHeight() * 7/2, col);
+            Font.drawCentered(Localization.getLocalized("Version:") + " " + version, screen, Font.textHeight() * 7/2, col);
+            Font.drawCentered(Localization.getLocalized("Authors:") + " " + author, screen, Font.textHeight() * 5, col);
         }
 
-        Font.drawCentered(Game.input.getMapping("select") + Localization.getLocalized(" to confirm"), screen, Screen.h - 60, Color.GRAY);
-        Font.drawCentered(Game.input.getMapping("exit") + Localization.getLocalized(" to return"), screen, Screen.h - 40, Color.GRAY);
+        Font.drawCentered(Game.input.getMapping("select") + Localization.getLocalized(" to confirm"), screen, Screen.h - 40, Color.GRAY);
+        Font.drawCentered(Game.input.getMapping("exit") + Localization.getLocalized(" to return"), screen, Screen.h - 20, Color.GRAY);
 
         String title = Localization.getLocalized("Fabric Mod Menu");
         int color = Color.WHITE;
