@@ -22,7 +22,8 @@
   ],
   "depends": {
     "minicraftplus": [
-      "2.2.0-dev3"
+      "2.2.0-dev3",
+      "2.2.0-dev4"
     ]
   }
 }
