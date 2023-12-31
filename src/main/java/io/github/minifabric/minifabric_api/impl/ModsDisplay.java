@@ -97,7 +97,7 @@ public class ModsDisplay extends Display {
     @Override
     public void tick(InputHandler input) {
         super.tick(input);
-        if (input.getKey("exit").clicked) {
+        if (input.getMappedKey("exit").isClicked()) {
             Game.setDisplay(parent);
         }
     }
