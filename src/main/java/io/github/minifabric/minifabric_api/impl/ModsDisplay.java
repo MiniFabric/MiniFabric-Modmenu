@@ -7,11 +7,15 @@ import minicraft.gfx.Color;
 import minicraft.gfx.Font;
 import minicraft.gfx.Screen;
 import minicraft.screen.*;
+import minicraft.screen.Menu;
 import minicraft.screen.entry.SelectEntry;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.Person;
 
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
@@ -99,7 +103,13 @@ public class ModsDisplay extends Display {
         super.tick(input);
         if (input.getMappedKey("exit").isClicked()) {
             Game.setDisplay(parent);
-        }
+        } else if (input.getMappedKey("info").isClicked()) {
+			try {
+				Desktop.getDesktop().open(new File("mods/"));
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		}
     }
 
     @Override
@@ -143,8 +153,9 @@ public class ModsDisplay extends Display {
             Font.drawCentered(Localization.getLocalized("Authors:") + " " + author, screen, Font.textHeight() * 5, col);
         }
 
-        Font.drawCentered(Game.input.getMapping("select") + Localization.getLocalized(" to confirm"), screen, Screen.h - 40, Color.GRAY);
-        Font.drawCentered(Game.input.getMapping("exit") + Localization.getLocalized(" to return"), screen, Screen.h - 20, Color.GRAY);
+        Font.drawCentered(Game.input.getMapping("info") + Localization.getLocalized(" to open mods folder"), screen, Screen.h - 30, Color.GRAY);
+        Font.drawCentered(Game.input.getMapping("select") + Localization.getLocalized(" to confirm"), screen, Screen.h - 20, Color.GRAY);
+        Font.drawCentered(Game.input.getMapping("exit") + Localization.getLocalized(" to return"), screen, Screen.h - 10, Color.GRAY);
 
         String title = Localization.getLocalized("Fabric Mod Menu");
         int color = Color.WHITE;
