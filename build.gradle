@@ -11,14 +11,13 @@ repositories {
 		name = 'Fabric'
 		url = 'https://maven.fabricmc.net/'
 	}
+	maven { url 'https://www.jitpack.io' }
 	mavenCentral()
 	mavenLocal()
 }
 
 dependencies {
-	//implementation("java.minicraft:minicraft-plus:${project.minicraftplus_version}")
-	// Until I get import fixed..
-	implementation files("run/minicraft-plus-2.2.0-dev4.jar")
+	implementation 'com.github.MinicraftPlus:minicraft-plus-revived:2.2.0-dev4'
 	implementation 'io.github.pseudodistant:MinicraftGameProvider:1.2.0'
 	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	implementation "net.fabricmc:sponge-mixin:0.11.0+mixin.0.8.5"
